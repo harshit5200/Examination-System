@@ -6,6 +6,7 @@ from django.contrib.auth import login, authenticate, logout
 from .forms import SignUpForm
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
+from django.http import HttpResponse
 
 
 ename=""
@@ -26,8 +27,8 @@ def addExam(request):
         TotalMarks = request.POST['total-marks']
         Duration = request.POST['duration']
         StartDate = request.POST['startdate']
-        StartTime = request.POST['starttime']
-        EndTime = request.POST['endtime']
+        StartTime = request.POST['starttime'] + ":00"
+        EndTime = request.POST['endtime'] + ":00"
         E = Exams(Ename=Ename,QuestionCount=QuestionCount,Tmarks=TotalMarks,Duration=Duration,Date=StartDate,STime=StartTime,ETime = EndTime)
         ename = E
         qcount = QuestionCount
@@ -70,15 +71,25 @@ def startExam(request):
         questions = list()
         Q = Questions.objects.all()
         E = Exams.objects.all()
-        t = ''
+        t = None
+        tmark = None
+        stime=None
+        etime=None
         for i in E:
-            t = i.Duration
+            if str(i.STime) < datetime.datetime.now().strftime("%H:%M:%S") and str(i.ETime) > datetime.datetime.now().strftime("%H:%M:%S") and i.Date == datetime.date.today():
+                t = i.Duration
+                tmark = i.Tmarks
+                stime = i.STime 
+                etime = str(i.ETime)
+        currenttime = datetime.datetime.now().strftime("%H:%M:%S")
+        difftime = str(datetime.datetime.now().strptime(etime, "%H:%M:%S") - datetime.datetime.now().strptime(currenttime, "%H:%M:%S"))[2:4]
+        ti = min(int(t), int(difftime))
         for i in Q:
             if str(i.Ename.STime) < datetime.datetime.now().strftime("%H:%M:%S") and str(i.Ename.ETime) > datetime.datetime.now().strftime("%H:%M:%S") and i.Ename.Date == datetime.date.today():
-                l = [i.Question,i.option1,i.option2,i.option3,i.option4,i.Answer]
+                l = [i.Question,i.option1,i.option2,i.option3,i.option4,i.Answer,i.marks]
                 questions.append(l)
         question_list = json.dumps(questions)
-        context = {'Time':t, 'Question':question_list}
+        context = {'Time':ti, 'Question':question_list, 'Total':tmark}
         return render(request, 'ExamPanel.html',context)
 
 def signup(request):
@@ -117,3 +128,18 @@ def logout_request(request):
     logout(request)
     messages.info(request, "You have successfully logged out.") 
     return render(request,'Logout.html')
+
+def Result(request):
+    username = request.user.username
+    E = Exams.objects.all()
+    en = None
+    for i in E:
+            if str(i.STime) < datetime.datetime.now().strftime("%H:%M:%S") and str(i.ETime) > datetime.datetime.now().strftime("%H:%M:%S") and i.Date == datetime.date.today():
+                en = i
+    res = request.POST['result']
+    if not res:
+        res = 0
+    R = Results(Name=username,Ename=en,marks=res)
+    R.save()
+    return render(request, 'ExamPanel.html')
+    

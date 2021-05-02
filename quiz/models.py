@@ -1,11 +1,6 @@
 from django.db import models
 
 # Create your models here.
-class Students(models.Model):
-    Name = models.CharField(max_length=30)
-    Password = models.CharField(max_length=20)
-    Email = models.EmailField()
-    Contact = models.CharField(max_length=10)
 
 class Questions(models.Model):
     Qid = models.AutoField(primary_key=True)
@@ -27,7 +22,7 @@ class Exams(models.Model):
     Tmarks = models.CharField(max_length=20)
     Duration = models.CharField(max_length=5)
 
-class Result(models.Model):
-    Name = models.ForeignKey('Students', on_delete=models.CASCADE)
+class Results(models.Model):
     Ename = models.ForeignKey('Exams', on_delete=models.CASCADE)
+    Name = models.CharField(max_length=50)
     marks = models.CharField(max_length=3)

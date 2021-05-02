@@ -16,7 +16,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from quiz import views
-from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,7 +25,7 @@ urlpatterns = [
     path('formsubmit/', views.addQuestion),
     path('studentpanel/',views.showStudent),
     path('startexam/',views.startExam),
-    path('exitexam/',views.showExamForm),
     path('login/',views.login_request),
     path('logout/',views.logout_request),
+    path('exitexam/',views.Result),
 ]

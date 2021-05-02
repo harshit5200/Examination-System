@@ -12,6 +12,11 @@
             <div id="progress-bar" style="width: 50; height: 1%; border-radius: 4px; background-color: #FFF;"></div>
             <article class="clock" id="model3">
                 <h3></h3>
+                <form action="/exitexam/" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="result" id="marks" hidden>
+                    <input value="Finish Test" style="height: 5%; background-color: white; font-family: 'Baloo 2'; border: none;" type="submit">
+                </form>
               
                 <div class="count">
                     <h3 class="count-timer">Exam Ends In</h3>
@@ -63,12 +68,12 @@
             function exitExam() {
                 window.open("/exitexam");
             }
+
             function renderQuestion(){ 
                 document.getElementById("progress-bar").style.width = (pos/questions.length) * 100 + "%";
                 test = _("test");
                 if(pos >= questions.length){
-                    test.innerHTML = "<h2 class='test-result'>You Scored "+correct+" Out Of "+questions.length +"</h2></br/>";
-                    test.innerHTML += "<button class='exit-exam-btn' onclick='exitExam()'>Exit Exam</button></br/></br/></br/>";
+                    test.innerHTML = "<h2 class='test-result'>You Scored "+correct+" Out Of "+'{{Total}}' +"</h2></br/>";
                     _("test_status").innerHTML = "Test Completed";
                     return false;
                 }
@@ -94,7 +99,8 @@
                     }
                 }
                 if(choice == questions[pos][5]){
-                    correct++;
+                    correct = correct + questions[pos][6];
+                    document.getElementById("marks").value = correct;
                 }
                 pos++;
                 renderQuestion();

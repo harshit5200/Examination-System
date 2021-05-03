@@ -54,8 +54,18 @@ def addQuestion(request):
         return render(request, 'AddExam.html')
    
 def showStudent(request):
+    Mark = None
     if request.user.is_authenticated:
         E = Exams.objects.all()
+        M = Marks.objects.all()
+        for i in M:
+            if i.Name == request.user.username:
+                if i.Ename.Date == datetime.date.today():
+                    if str(i.Ename.STime) < datetime.datetime.now().strftime("%H:%M:%S") and str(i.Ename.ETime) > datetime.datetime.now().strftime("%H:%M:%S"):
+                        if i.marks:
+                            Mark = True
+                        else:
+                            Mark = False
         Ex = dict()
         for i in E:
             if i.Date == datetime.date.today():
@@ -63,7 +73,7 @@ def showStudent(request):
                     Ex[i] = False
                 else:
                     Ex[i] = True
-        context = {'Exam':Ex}
+        context = {'Exam':Ex, 'doneExam':Mark}
         return render(request, 'StudentPanel.html', context)
 
 def startExam(request):
@@ -107,22 +117,25 @@ def signup(request):
     return render(request, 'signup.html', {'form': form})
 
 def login_request(request):
-	if request.method == "POST":
-		form = AuthenticationForm(request, data=request.POST)
-		if form.is_valid():
-			username = form.cleaned_data.get('username')
-			password = form.cleaned_data.get('password')
-			user = authenticate(username=username, password=password)
-			if user is not None:
-				login(request, user)
-				messages.info(request, f"You are now logged in as {username}.")
-				return render(request, 'AddExam.html')
-			else:
-				messages.error(request,"Invalid username or password.")
-		else:
-			messages.error(request,"Invalid username or password.")
-	form = AuthenticationForm()
-	return render(request=request, template_name="login.html", context={"login_form":form})
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.info(request, f"You are now logged in as {username}.")
+                if request.user.username == 'minato':
+                    return render(request, 'AddExam.html')
+                else:
+                    return redirect('/studentpanel')
+            else:
+                messages.error(request,"Invalid username or password.")
+        else:
+            messages.error(request,"Invalid username or password.")
+    form = AuthenticationForm()
+    return render(request=request, template_name="login.html", context={"login_form":form})
 
 def logout_request(request):
     logout(request)
@@ -139,7 +152,7 @@ def Result(request):
     res = request.POST['result']
     if not res:
         res = 0
-    R = Results(Name=username,Ename=en,marks=res)
+    R = Marks(Name=username,Ename=en,marks=res)
     R.save()
-    return render(request, 'ExamPanel.html')
+    return redirect('/studentpanel')
     

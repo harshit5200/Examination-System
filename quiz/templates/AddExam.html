@@ -17,7 +17,6 @@
                     <div class="row">
                         <p class="nav-info"><b>Welcome, {{user.username}}</b></p>&nbsp;&nbsp;
                         <button class="add-student-btn" onclick="regStudent()"><b>Register Student</b></button>
-                        <button class="add-question-btn" onclick="addQuestion()"><b>Add Exam</b></button>
                         <button class="admin-logout-btn" onclick="logoutAdmin()"><b>Logout</b></button>
                     </div>
                 </div>
@@ -45,10 +44,7 @@
             window.open("/logout");
         }
         function regStudent() {
-            window.open("/addstudent");
-        }
-        function addQuestion() {
-            window.open("/addquestion");
+            window.open("/signup");
         }
     </script>
 </html>

@@ -22,7 +22,8 @@ class Exams(models.Model):
     Tmarks = models.CharField(max_length=20)
     Duration = models.CharField(max_length=5)
 
-class Results(models.Model):
+class Marks(models.Model):
+    Mid = models.AutoField(primary_key=True)
     Ename = models.ForeignKey('Exams', on_delete=models.CASCADE)
     Name = models.CharField(max_length=50)
     marks = models.CharField(max_length=3)

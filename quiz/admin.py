@@ -4,3 +4,4 @@ from quiz.models import *
 admin.site.register(Questions)
 admin.site.register(Exams)
 admin.site.register(Marks)
+admin.site.register(Warnings)

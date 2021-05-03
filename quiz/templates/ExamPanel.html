@@ -74,6 +74,7 @@
                 test = _("test");
                 if(pos >= questions.length){
                     test.innerHTML = "<h2 class='test-result'>You Scored "+correct+" Out Of "+'{{Total}}' +"</h2></br/>";
+                    test.innerHTML += "<h2 class='test-result'>Click On Finish Test To Submit</h2></br/>";
                     _("test_status").innerHTML = "Test Completed";
                     return false;
                 }

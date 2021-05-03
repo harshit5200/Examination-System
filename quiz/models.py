@@ -27,3 +27,10 @@ class Marks(models.Model):
     Ename = models.ForeignKey('Exams', on_delete=models.CASCADE)
     Name = models.CharField(max_length=50)
     marks = models.CharField(max_length=3)
+
+class Warnings(models.Model):
+    Wid = models.AutoField(primary_key=True)
+    Name = models.CharField(max_length=50)
+    Noface = models.IntegerField()
+    Multiface = models.IntegerField()
+    Ename = models.ForeignKey('Exams', on_delete=models.CASCADE)

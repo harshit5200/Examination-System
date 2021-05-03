@@ -4,22 +4,23 @@ import time
 
 # importing_haarcascade_classifiers
 face_classifier =cv2.CascadeClassifier('haarcascades/haarcascade_frontalface_default.xml')
-
+nofaceCount = 0
+multifaceCount = 0
 
 # face_detection_function
 def face_detection(image):
     
     # grascaling_image_passed
     if ret is True:
-        gray=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
+        gray=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)  
         
         # detecting_faces    
         faces=face_classifier.detectMultiScale(gray,1.3,5)#1.6,7
         
         if len(faces)==0:
-            print("No faces found")
+            nofaceCount += 1
         elif len(faces)>1:
-            print("multiple faces found")
+            multifaceCount += 1
         else:
             pass
         
